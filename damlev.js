@@ -1,4 +1,46 @@
-module.exports = function damlev (source, target, options) {
+// Cache the codes and score arrays to significantly speed up damlev calls:
+// there's no need to re-allocate them.
+var sourceCodes, targetCodes, score;
+
+/**
+ * Clears the cached arrays, freeing memory that would otherwise be kept
+ * forever.
+ */
+function resetCache() {
+  sourceCodes = new Array(32);
+  targetCodes = new Array(32);
+  score = new Array(33 * 33);
+}
+
+resetCache();
+
+/**
+ * growArray will return an array that's at least as large as the provided
+ * size. It may or may not return the same array that was passed in.
+ * @param  {Array} arr
+ * @param  {Number} size
+ * @return {Array}
+ */
+function growArray(arr, size) {
+  if (size <= arr.length) {
+    return arr;
+  }
+
+  var target = arr.length;
+  while (target < size) {
+    target *= 2;
+  }
+
+  return new Array(target);
+}
+
+/**
+ * Returns the edit distance between the source and target strings.
+ * @param  {String} source
+ * @param  {Strign} target
+ * @return {Number}
+ */
+function damlev (source, target) {
   // If one of the strings is blank, returns the length of the other (the
   // cost of the n insertions)
   if (!source) {
@@ -12,15 +54,15 @@ module.exports = function damlev (source, target, options) {
   var i;
 
   // Initialize a char code cache array
-  var sourceCodes = new Array(sourceLength);
-  var targetCodes = new Array(targetLength);
+  sourceCodes = growArray(sourceCodes, sourceLength);
+  targetCodes = growArray(targetCodes, targetLength);
   for (i = 0; i < sourceLength; i++) { sourceCodes[i] = source.charCodeAt(i); }
   for (i = 0; i < targetLength; i++) { targetCodes[i] = target.charCodeAt(i); }
 
   // Initialize the scoring matrix
   var INF = sourceLength + targetLength;
   var rowSize = sourceLength + 1;
-  var score = new Array((sourceLength + 1) * (targetLength + 1));
+  score = growArray(score, (sourceLength + 1) * (targetLength + 1));
   score[0] = INF;
 
   for (i = 0; i <= sourceLength; i++) {
@@ -54,4 +96,7 @@ module.exports = function damlev (source, target, options) {
     chars[sourceCodes[i - 1]] = i;
   }
   return score[(sourceLength + 1) * rowSize + targetLength + 1];
-};
+}
+
+module.exports = damlev;
+module.exports.uncache = resetCache;

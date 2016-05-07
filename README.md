@@ -15,7 +15,7 @@ damlev('javascript', 'yavascritp'); // => 2
 ```
  $ npm run bench
 
-          17,483 op/s » WatchBeam/damlev
+          19,542 op/s » WatchBeam/damlev
            3,749 op/s » lzrski/damerau-levenshtein
            5,731 op/s » StefanHamminga/damerau-levenshtein-git
            2,686 op/s » davidhampgonsalves
