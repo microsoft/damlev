@@ -1,3 +1,5 @@
+'use strict';
+
 // Cache the codes and score arrays to significantly speed up damlev calls:
 // there's no need to re-allocate them.
 var sourceCodes, targetCodes, score;
@@ -28,11 +30,20 @@ function growArray(arr, size) {
 
   var target = arr.length;
   while (target < size) {
-    target *= 2;
+    target <<= 2;
   }
 
   return new Array(target);
 }
+
+function min2(a, b) {
+  if (a > b) {
+    return b;
+  }
+  return a;
+}
+
+
 
 /**
  * Returns the edit distance between the source and target strings.
@@ -45,7 +56,8 @@ function damlev (source, target) {
   // cost of the n insertions)
   if (!source) {
     return target.length;
-  } else if (!target){
+  }
+  if (!target){
     return source.length;
   }
 
@@ -65,19 +77,21 @@ function damlev (source, target) {
   score = growArray(score, (sourceLength + 1) * (targetLength + 1));
   score[0] = INF;
 
+  var idx;
   for (i = 0; i <= sourceLength; i++) {
-    score[(i + 1) * rowSize + 0] = INF;
-    score[(i + 1) * rowSize + 1] = i;
+    idx = (i + 1) * rowSize
+    score[idx] = INF;
+    score[idx + 1] = i;
   }
 
   for (i = 0; i <= targetLength; i++) {
-    score[0 * rowSize + i + 0] = INF;
-    score[1 * rowSize + i + 1] = i;
+    score[i] = INF;
+    score[rowSize + i + 1] = i;
   }
 
   // Run the damlev algorithm
   var chars = {};
-  var j, DB, i1, j2, newScore;
+  var j, DB, i1, j1, j2, newScore;
   for (i = 1; i <= sourceLength; i++) {
     DB = 0;
     for (j = 1; j <= targetLength; j++) {
@@ -88,10 +102,10 @@ function damlev (source, target) {
         newScore = score[i * rowSize + j];
         DB = j;
       } else {
-        newScore = Math.min(score[i * rowSize + j], Math.min(score[(i + 1) * rowSize + j], score[i * rowSize + j + 1])) + 1;
+        newScore = min2(score[i * rowSize + j], min2(score[(i + 1) * rowSize + j], score[i * rowSize + j + 1])) + 1;
       }
 
-      score[(i + 1) * rowSize + j + 1] = Math.min(newScore, score[i1 * rowSize + j1] + (i - i1 - 1) + 1 + (j - j1 - 1));
+      score[(i + 1) * rowSize + j + 1] = min2(newScore, score[i1 * rowSize + j1] + (i - i1 - 1) + 1 + (j - j1 - 1));
     }
     chars[sourceCodes[i - 1]] = i;
   }
