@@ -36,14 +36,18 @@ function growArray(arr, size) {
   return new Array(target);
 }
 
+/**
+ * Returns the minimum of both variables
+ * @param  {Number} a
+ * @param  {Number} b
+ * @return {Number}
+ */
 function min2(a, b) {
   if (a > b) {
     return b;
   }
   return a;
 }
-
-
 
 /**
  * Returns the edit distance between the source and target strings.
