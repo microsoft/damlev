@@ -1,24 +1,25 @@
+const crypto = require('crypto');
 const assert = require('assert');
 const damlev = require('./');
 
 describe('damlev', () => {
+    /**
+     * These test cases were taken from:
+     * https://github.com/jamesturk/jellyfish-testdata
+     */
+    const tt = [
+        ['', '', 0],
+        ['abc', '', 3],
+        ['bc', 'abc', 1],
+        ['fuor', 'four', 1],
+        ['abcd', 'acb', 2],
+        ['cape sand recycling ', 'edith ann graham', 17],
+        ['jellyifhs', 'jellyfish', 2],
+        ['ifhs', 'fish', 2],
+        ['Hello, world!', 'Hello,國 world!', 1],
+    ];
 
     describe('general cases', () => {
-        /**
-         * These test cases were taken from:
-         * https://github.com/jamesturk/jellyfish-testdata
-         */
-        const tt = [
-            ['', '', 0],
-            ['abc', '', 3],
-            ['bc', 'abc', 1],
-            ['fuor', 'four', 1],
-            ['abcd', 'acb', 2],
-            ['cape sand recycling ', 'edith ann graham', 17],
-            ['jellyifhs', 'jellyfish', 2],
-            ['ifhs', 'fish', 2],
-            ['Hello, world!', 'Hello,國 world!', 1],
-        ];
 
         tt.forEach((t) => {
             it(`ranks "${t[0]}" vs "${t[1]} == ${t[2]}`, () => {
@@ -26,4 +27,14 @@ describe('damlev', () => {
             });
         });
     });
+
+    it('maintains correctness after fuzzing input', () => {
+        const str = () => crypto.randomBytes(Math.floor(Math.random() * 12)).toString('hex');
+        for (let i = 0; i < 10000; i++) {
+            damlev(str(), str());
+            for (let k = 0; k < tt.length; k++) {
+                assert.equal(damlev(tt[k][0], tt[k][1]), tt[k][2]);
+            }
+        }
+    })
 });
