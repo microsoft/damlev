@@ -1,6 +1,6 @@
 {
   "name": "damlev",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "The fastest JS implementation of the Damerau-Levenshtein edit distance",
   "author": "Connor Peet <connor@peet.io>",
   "license": "MIT",
