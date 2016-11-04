@@ -1,0 +1,6 @@
+/benchmark
+/.editorconfig
+/.travis.yml
+/damlev.ts
+/test.ts
+/tsconfig.json

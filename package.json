@@ -3,22 +3,28 @@
   "version": "0.1.0",
   "description": "The fastest JS implementation of the Damerau-Levenshtein edit distance",
   "author": "Connor Peet <connor@peet.io>",
-  "licenses": "MIT",
+  "license": "MIT",
   "main": "./damlev",
+  "typings": "./damlev",
   "repository": {
     "type": "git",
     "url": "git://github.com/WatchBeam/damlev.git"
   },
   "scripts": {
-    "test": "mocha",
-    "bench": "matcha benchmark/benchmark.js"
+    "test": "mocha --compilers ts:ts-node/register test.ts",
+    "bench": "tsc && matcha benchmark/benchmark.js",
+    "prepublish": "tsc"
   },
   "dependencies": {},
   "devDependencies": {
+    "@types/mocha": "^2.2.32",
+    "@types/node": "^6.0.46",
     "damerau-levenshtein": "^1.0.0",
     "damerau-levenshtein-git": "^1.0.2",
     "matcha": "^0.7.0",
-    "mocha": "^2.4.5"
+    "mocha": "^2.4.5",
+    "ts-node": "^1.6.1",
+    "typescript": "^2.0.7"
   },
   "bugs": {
     "url": "https://github.com/WatchBeam/damlev/issues"
@@ -31,6 +37,5 @@
     "edit",
     "distance",
     "fuzzy"
-  ],
-  "license": "MIT"
+  ]
 }

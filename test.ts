@@ -1,13 +1,13 @@
-const crypto = require('crypto');
-const assert = require('assert');
-const damlev = require('./');
+import { randomBytes } from 'crypto'
+import * as assert from 'assert';
+import damlev from './';
 
 describe('damlev', () => {
     /**
      * These test cases were taken from:
      * https://github.com/jamesturk/jellyfish-testdata
      */
-    const tt = [
+    const tt: [string, string, number][] = [
         ['', '', 0],
         ['abc', '', 3],
         ['bc', 'abc', 1],
@@ -29,12 +29,12 @@ describe('damlev', () => {
     });
 
     it('maintains correctness after fuzzing input', () => {
-        const str = () => crypto.randomBytes(Math.floor(Math.random() * 12)).toString('hex');
+        const str = () => randomBytes(Math.floor(Math.random() * 12)).toString('hex');
         for (let i = 0; i < 10000; i++) {
             damlev(str(), str());
             for (let k = 0; k < tt.length; k++) {
                 assert.equal(damlev(tt[k][0], tt[k][1]), tt[k][2]);
             }
         }
-    })
+    });
 });

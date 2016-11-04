@@ -1,18 +1,20 @@
 // Cache the codes and score arrays to significantly speed up damlev calls:
 // there's no need to re-allocate them.
-var sourceCodes, targetCodes, score;
+let sourceCodes: number[];
+let targetCodes: number[];
+let score: number[];
 
 /**
  * Clears the cached arrays, freeing memory that would otherwise be kept
  * forever.
  */
-function resetCache() {
+export function uncache() {
   sourceCodes = new Array(32);
   targetCodes = new Array(32);
   score = new Array(33 * 33);
 }
 
-resetCache();
+uncache();
 
 /**
  * growArray will return an array that's at least as large as the provided
@@ -21,7 +23,7 @@ resetCache();
  * @param  {Number} size
  * @return {Array}
  */
-function growArray(arr, size) {
+function growArray(arr: number[], size: number) {
   if (size <= arr.length) {
     return arr;
   }
@@ -40,7 +42,7 @@ function growArray(arr, size) {
  * @param  {Strign} target
  * @return {Number}
  */
-function damlev (source, target) {
+export default function damlev (source: string, target: string) {
   // If one of the strings is blank, returns the length of the other (the
   // cost of the n insertions)
   if (!source) {
@@ -49,9 +51,9 @@ function damlev (source, target) {
     return source.length;
   }
 
-  var sourceLength = source.length;
-  var targetLength = target.length;
-  var i;
+  const sourceLength = source.length;
+  const targetLength = target.length;
+  let i: number;
 
   // Initialize a char code cache array
   sourceCodes = growArray(sourceCodes, sourceLength);
@@ -60,8 +62,8 @@ function damlev (source, target) {
   for (i = 0; i < targetLength; i++) { targetCodes[i] = target.charCodeAt(i); }
 
   // Initialize the scoring matrix
-  var INF = sourceLength + targetLength;
-  var rowSize = sourceLength + 1;
+  const INF = sourceLength + targetLength;
+  const rowSize = sourceLength + 1;
   score = growArray(score, (sourceLength + 1) * (targetLength + 1));
   score[0] = INF;
 
@@ -76,8 +78,8 @@ function damlev (source, target) {
   }
 
   // Run the damlev algorithm
-  var chars = {};
-  var j, DB, i1, j2, newScore;
+  let chars: { [key: string]: number } = {};
+  let j: number, DB: number, i1: number, j1: number, j2: number, newScore: number;
   for (i = 1; i <= sourceLength; i++) {
     DB = 0;
     for (j = 1; j <= targetLength; j++) {
@@ -97,6 +99,3 @@ function damlev (source, target) {
   }
   return score[(sourceLength + 1) * rowSize + targetLength + 1];
 }
-
-module.exports = damlev;
-module.exports.uncache = resetCache;
