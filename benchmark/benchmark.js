@@ -9,7 +9,7 @@ suite('head-to-head', () => {
     set('mintime', 5000)
 
     Object.keys(libs).forEach((name) => {
-        const fn = libs[name];
+        const fn = libs[name].default || libs[name];
         bench(name, () => {
             // from https://github.com/sindresorhus/leven/blob/master/bench.js
             fn('a', 'b');
