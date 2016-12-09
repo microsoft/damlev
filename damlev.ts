@@ -80,9 +80,9 @@ export default function damlev (source: string, target: string) {
   // Run the damlev algorithm
   let chars: { [key: string]: number } = {};
   let j: number, DB: number, i1: number, j1: number, j2: number, newScore: number;
-  for (i = 1; i <= sourceLength; i++) {
+  for (i = 1; i <= sourceLength; i += 1) {
     DB = 0;
-    for (j = 1; j <= targetLength; j++) {
+    for (j = 1; j <= targetLength; j += 1) {
       i1 = chars[targetCodes[j - 1]] || 0;
       j1 = DB;
 
