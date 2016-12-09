@@ -68,12 +68,12 @@ export default function damlev (source: string, target: string) {
   score[0] = INF;
 
   for (i = 0; i <= sourceLength; i++) {
-    score[(i + 1) * rowSize + 0] = INF;
+    score[(i + 1) * rowSize] = INF;
     score[(i + 1) * rowSize + 1] = i;
   }
 
   for (i = 0; i <= targetLength; i++) {
-    score[0 * rowSize + i + 0] = INF;
+    score[i] = INF;
     score[1 * rowSize + i + 1] = i;
   }
 
@@ -93,7 +93,7 @@ export default function damlev (source: string, target: string) {
         newScore = Math.min(score[i * rowSize + j], Math.min(score[(i + 1) * rowSize + j], score[i * rowSize + j + 1])) + 1;
       }
 
-      score[(i + 1) * rowSize + j + 1] = Math.min(newScore, score[i1 * rowSize + j1] + (i - i1 - 1) + 1 + (j - j1 - 1));
+      score[(i + 1) * rowSize + j + 1] = Math.min(newScore, score[i1 * rowSize + j1] + (i - i1) + (j - j1 - 1));
     }
     chars[sourceCodes[i - 1]] = i;
   }
